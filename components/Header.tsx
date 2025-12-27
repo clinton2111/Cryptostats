@@ -11,7 +11,7 @@ const Header = () => {
     <header>
       <div className="main-container inner">
         <Link href={'/'}>
-          <Image src={'primary_logo.svg'} alt={'Cryptostats logo'} width={250} height={40} />
+          <Image src={'/primary_logo.svg'} alt={'Cryptostats logo'} width={250} height={40} />
         </Link>
         <nav>
           <Link
