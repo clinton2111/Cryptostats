@@ -15,7 +15,11 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: 'Cryptostats',
-  description: 'Crptoassets tracker and dashboard',
+  description:
+    'Advanced Crypto Screener App with a high-frequency trading terminal and real-time dashboard. Track, analyze, and screen cryptocurrencies efficiently.',
+  icons: {
+    icon: '/favicon.svg',
+  },
 };
 
 export default function RootLayout({

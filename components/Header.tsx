@@ -10,12 +10,12 @@ const Header = () => {
   return (
     <header>
       <div className="main-container inner">
-        <Link href={'/'}>
-          <Image src={'/primary_logo.svg'} alt={'Cryptostats logo'} width={250} height={40} />
+        <Link href="/">
+          <Image src="/primary_logo.svg" alt="Cryptostats logo" width={250} height={40} />
         </Link>
         <nav>
           <Link
-            href={'/'}
+            href="/"
             className={cn('nav-link', {
               'is-active': pathname === '/',
               'is-home': true,
@@ -25,7 +25,7 @@ const Header = () => {
           </Link>
           <p>Search Modal</p>
           <Link
-            href={'/coins'}
+            href="/coins"
             className={cn('nav-link', {
               'is-active': pathname === '/coins',
             })}
