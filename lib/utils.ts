@@ -13,7 +13,14 @@ export function formatCurrency(
   showSymbol?: boolean
 ) {
   if (value === null || value === undefined || isNaN(value)) {
-    return showSymbol !== false ? '$0.00' : '0.00';
+    if (showSymbol === false) return '0.00';
+    const curr = currency?.toUpperCase() || 'USD';
+    return (0).toLocaleString(undefined, {
+      style: 'currency',
+      currency: curr,
+      minimumFractionDigits: digits ?? 2,
+      maximumFractionDigits: digits ?? 2,
+    });
   }
 
   if (showSymbol === undefined || showSymbol === true) {
