@@ -1,9 +1,9 @@
 'use server';
 
 import qs from 'query-string';
+import { IS_DEV_MODE } from './config';
 
 const getConfig = () => {
-  const IS_DEV_MODE = process.env.API_MODE === 'DEV';
   const BASE_URL = IS_DEV_MODE ? process.env.COINGECKO_DEV_BASE_URL : process.env.COINGECKO_PROD_BASE_URL;
   const API_KEY = IS_DEV_MODE ? process.env.COINGECKO_DEV_API_KEY : process.env.COINGECKO_PROD_API_KEY;
   const AUTH_HEADER_NAME = IS_DEV_MODE ? 'x-cg-demo-api-key' : 'x-cg-pro-api-key';
