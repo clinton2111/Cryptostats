@@ -34,6 +34,9 @@ export const fetcher = async <T>(endpoint: string, params?: QueryParams, revalid
     next: { revalidate },
   });
 
+  // Simulate network delay
+  // await new Promise((resolve) => setTimeout(resolve, 2000));
+
   if (!response.ok) {
     const errorBody: CoinGeckoErrorBody = await response.json().catch(() => ({}));
     throw new Error(`API Error: ${response.status}: ${errorBody.error || response.statusText}`);
