@@ -23,7 +23,7 @@ export const fetcher = async <T>(endpoint: string, params?: QueryParams, revalid
       url: `${BASE_URL}/${endpoint}`,
       query: params,
     },
-    { skipEmptyString: true, skipNull: true }
+    { skipEmptyString: true, skipNull: true },
   );
 
   const response = await fetch(url, {
@@ -44,3 +44,37 @@ export const fetcher = async <T>(endpoint: string, params?: QueryParams, revalid
 
   return response.json();
 };
+
+export async function getPools(
+  id: string,
+  network?: string | null,
+  contractAddress?: string | null,
+): Promise<PoolData> {
+  const fallback: PoolData = {
+    id: '',
+    address: '',
+    name: '',
+    network: '',
+  };
+
+  if (network && contractAddress) {
+    try {
+      const poolData = await fetcher<{ data: PoolData[] }>(
+        `/onchain/networks/${network}/tokens/${contractAddress}/pools`,
+      );
+
+      return poolData.data?.[0] ?? fallback;
+    } catch (error) {
+      console.log(error);
+      return fallback;
+    }
+  }
+
+  try {
+    const poolData = await fetcher<{ data: PoolData[] }>('/onchain/search/pools', { query: id });
+
+    return poolData.data?.[0] ?? fallback;
+  } catch {
+    return fallback;
+  }
+}
