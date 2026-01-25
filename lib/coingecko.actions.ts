@@ -45,11 +45,11 @@ export const fetcher = async <T>(endpoint: string, params?: QueryParams, revalid
   return response.json();
 };
 
-export async function getPools(
+export const getPools = async (
   id: string,
   network?: string | null,
   contractAddress?: string | null,
-): Promise<PoolData> {
+): Promise<PoolData> => {
   const fallback: PoolData = {
     id: '',
     address: '',
@@ -77,4 +77,65 @@ export async function getPools(
   } catch {
     return fallback;
   }
-}
+};
+
+export const getTrendingCoins = async (): Promise<TrendingCoin[]> => {
+  try {
+    const data = await fetcher<{ coins: TrendingCoin[] }>('/search/trending');
+    return data.coins;
+  } catch (error) {
+    console.log(error);
+    return [];
+  }
+};
+
+export const searchCoins = async (query: string): Promise<SearchCoin[]> => {
+  if (!query) {
+    return [];
+  }
+
+  try {
+    const searchResult = await fetcher<{
+      coins: {
+        id: string;
+        name: string;
+        symbol: string;
+        market_cap_rank: number | null;
+        thumb: string;
+        large: string;
+      }[];
+    }>('/search', { query });
+    const top10Coins = searchResult.coins.slice(0, 10);
+    const coinIds = top10Coins.map((coin) => coin.id);
+
+    if (coinIds.length === 0) {
+      return [];
+    }
+
+    const marketsResult = await fetcher<CoinMarketData[]>('/coins/markets', {
+      vs_currency: 'usd',
+      ids: coinIds.join(','),
+    });
+
+    const merged = top10Coins.map((coin) => {
+      const marketData = marketsResult.find((m) => m.id === coin.id);
+      return {
+        id: coin.id,
+        name: coin.name,
+        symbol: coin.symbol,
+        market_cap_rank: coin.market_cap_rank,
+        thumb: coin.thumb,
+        large: coin.large,
+        data: {
+          price: marketData?.current_price,
+          price_change_percentage_24h: marketData?.price_change_percentage_24h ?? 0,
+        },
+      };
+    });
+
+    return merged;
+  } catch (error) {
+    console.error('Error searching coins:', error);
+    return [];
+  }
+};
