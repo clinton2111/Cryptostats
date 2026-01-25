@@ -111,13 +111,20 @@ const CandlestickChart = ({
     let merged: OHLCData[];
 
     if (liveOhlcv) {
-      const liveTimestamp = liveOhlcv[0];
+      const normalizedTimestamp = liveOhlcv[0] > 1e12 ? Math.floor(liveOhlcv[0] / 1000) : Math.floor(liveOhlcv[0]);
+      const normalizedLiveOhlcv: OHLCData = [
+        normalizedTimestamp,
+        liveOhlcv[1],
+        liveOhlcv[2],
+        liveOhlcv[3],
+        liveOhlcv[4],
+      ];
       const lastHistoricalCandle = convertedToSeconds[convertedToSeconds.length - 1];
 
-      if (lastHistoricalCandle && lastHistoricalCandle[0] === liveTimestamp) {
-        merged = [...convertedToSeconds.slice(0, -1), liveOhlcv];
+      if (lastHistoricalCandle && lastHistoricalCandle[0] === normalizedTimestamp) {
+        merged = [...convertedToSeconds.slice(0, -1), normalizedLiveOhlcv];
       } else {
-        merged = [...convertedToSeconds, liveOhlcv];
+        merged = [...convertedToSeconds, normalizedLiveOhlcv];
       }
     } else {
       merged = convertedToSeconds;

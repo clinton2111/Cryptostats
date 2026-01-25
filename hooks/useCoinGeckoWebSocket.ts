@@ -4,6 +4,11 @@ import { useEffect, useRef, useState } from 'react';
 import { IS_DEV_MODE_PUBLIC } from '@/lib/config';
 import qs from 'query-string';
 
+// WARNING: This exposes a CoinGecko API key on the client-side.
+// This is intended for demonstration purposes only with a non-privileged, demo API key.
+// For a production environment, you should implement a backend proxy
+// that manages the WebSocket connection and API key securely.
+// The client would then connect to your backend instead of directly to CoinGecko.
 const WS_BASE = `${process.env.NEXT_PUBLIC_COINGECKO_WEBSOCKET_URL}?x_cg_pro_api_key=${process.env.NEXT_PUBLIC_COINGECKO_API_KEY_PROD}`;
 const API_CONFIG = {
   BASE_URL: 'https://api.coingecko.com/api/v3',
@@ -178,6 +183,11 @@ export const useCoinGeckoWebSocket = ({
       ws.onopen = () => setIsConnected(true);
       ws.onmessage = handleMessage;
       ws.onclose = () => setIsConnected(false);
+
+      ws.onerror = (error) => {
+        console.error('Websocket Error :', error);
+        setIsConnected(false);
+      };
 
       return () => ws.close();
     }
